@@ -12,5 +12,12 @@
 ### API
 #### [GET] /posts/{index}
 Get {index}th post.
+#### [GET] /policy Get policy for this subreddit. (JSON)
+#### [GET] /newPolicy Get new policy generated from our LLM (JSON)
+#### [POST] (JSON {“post”: Int, “concern”: String}, {“policy”: String})
+#### [POST] (JSON {“policy”: String, “Simulation”:{}}, {“results”:[{“role”:String,’’comment”: String}]})
+#### [POST] /vote (JSON {“user”: Int, “policy”: Int, “vote”: String})
+
+
 
 eg. `http://localhost:8080/posts/39`
