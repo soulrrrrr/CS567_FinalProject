@@ -1,4 +1,4 @@
-package utils
+package db
 
 import (
 	"context"
@@ -10,7 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectMongoDB() *mongo.Database {
+var Client *mongo.Client
+
+func ConnectMongoDB() {
 	mongoURI := os.Getenv("MONGO_URI")
 	clientOptions := options.Client().ApplyURI(mongoURI)
 
@@ -28,5 +30,9 @@ func ConnectMongoDB() *mongo.Database {
 	}
 
 	log.Println("Connected to MongoDB")
-	return client.Database("project-cluster")
+	Client = client
+}
+
+func GetCollection(collectionName string) *mongo.Collection {
+	return Client.Database("project-cluster").Collection(collectionName)
 }

@@ -6,16 +6,19 @@ import (
 	"net/http"
 	"os"
 
+	"567_final/db"
 	"567_final/handlers"
-	"567_final/routes"
-	"567_final/utils"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	database := utils.ConnectMongoDB()
-	handlers.SetDatabase(database)
+	db.ConnectMongoDB()
 
-	r := routes.RegisterRoutes()
+	r := mux.NewRouter()
+	r.HandleFunc("/posts/{index}", handlers.GetPostByIndexHandler).Methods("GET")
+	r.HandleFunc("/policy", handlers.GetPolicyHandler).Methods("GET")
+	r.HandleFunc("/newPolicy", handlers.GetNewPolicyHandler).Methods("GET")
 
 	port := os.Getenv("PORT")
 	if port == "" {
