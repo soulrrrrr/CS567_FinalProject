@@ -33,3 +33,13 @@ type Post struct {
 	Upvote    int                `json:"upvote" bson:"upvote"`
 	URL       string             `json:"url" bson:"url"`
 }
+
+// postConcern
+type ConcernRequest struct {
+	ID      primitive.ObjectID `json:"_id"`
+	Concern string             `json:"concern"`
+}
+
+type ConcernResponse struct {
+	Policy string `json:"policy"`
+}
