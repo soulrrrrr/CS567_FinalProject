@@ -43,3 +43,13 @@ type ConcernRequest struct {
 type ConcernResponse struct {
 	Policy string `json:"policy"`
 }
+
+// postVote
+type VoteRequest struct {
+	UserID   int    `json:"user"`
+	PolicyID string `json:"policy"`
+}
+
+type VoteResponse struct {
+	Success bool `json:"success"`
+}

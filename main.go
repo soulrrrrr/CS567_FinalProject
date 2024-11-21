@@ -20,6 +20,7 @@ func main() {
 	r.HandleFunc("/policy", handlers.GetPolicyHandler).Methods("GET")
 	r.HandleFunc("/newPolicy", handlers.GetNewPolicyHandler).Methods("GET")
 	r.HandleFunc("/concern", handlers.PostConcernHandler).Methods("POST")
+	r.HandleFunc("/vote", handlers.PostVoteHandler).Methods("POST")
 
 	port := os.Getenv("PORT")
 	if port == "" {
