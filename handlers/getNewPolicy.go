@@ -11,7 +11,7 @@ import (
 )
 
 func GetNewPolicyHandler(w http.ResponseWriter, r *http.Request) {
-	collection := db.GetCollection("policy")
+	collection := db.GetCollection("uiuc-policy")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
