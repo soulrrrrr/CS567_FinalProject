@@ -53,3 +53,18 @@ type VoteRequest struct {
 type VoteResponse struct {
 	Success bool `json:"success"`
 }
+
+// postSimulation
+type SimulationRequest struct {
+	PolicyID   string `json:"policy"`
+	Simulation string `json:"simulation"`
+}
+
+type SimulationResponse struct {
+	Results []SimulationResult `json:"results"`
+}
+
+type SimulationResult struct {
+	Role    string `json:"role"`
+	Comment string `json:"comment"`
+}
