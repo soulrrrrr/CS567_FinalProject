@@ -184,3 +184,9 @@ Submit a vote for a specific policy.
 
 - **POST /vote**  
   Submit a vote for a policy.
+
+  /// TODO
+  // getPost: get all posts at a time
+  // postComment: update comment of a post
+  // postUpvote: update Upvote of a post
+

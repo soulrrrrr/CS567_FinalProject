@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func GetPostByIndexHandler(w http.ResponseWriter, r *http.Request) {
+func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	collection := db.GetCollection("reddit-posts")
 	vars := mux.Vars(r)
 	indexStr := vars["index"]
@@ -33,19 +33,16 @@ func GetPostByIndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer cursor.Close(ctx)
 
+	var posts []db.Post
 	var post db.Post
-	i := 0
 	for cursor.Next(ctx) {
 		if err := cursor.Decode(&post); err != nil {
 			http.Error(w, "Failed to decode post", http.StatusInternalServerError)
 			return
 		}
-		if i == index {
-			break
-		}
-		i++
+		posts = append(posts, post)
 	}
-	fmt.Printf("[GET] /posts %d\n", i)
+	fmt.Printf("[GET] /posts\n")
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(post)
+	json.NewEncoder(w).Encode(posts)
 }

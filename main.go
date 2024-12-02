@@ -16,7 +16,7 @@ func main() {
 	db.ConnectMongoDB()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/posts/{index}", handlers.GetPostByIndexHandler).Methods("GET")
+	r.HandleFunc("/posts", handlers.GetPostsHandler).Methods("GET")
 	r.HandleFunc("/policy", handlers.GetPolicyHandler).Methods("GET")
 	r.HandleFunc("/newPolicy", handlers.GetNewPolicyHandler).Methods("GET")
 	r.HandleFunc("/concern", handlers.PostConcernHandler).Methods("POST")
