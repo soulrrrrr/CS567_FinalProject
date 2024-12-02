@@ -176,6 +176,45 @@ Submit a vote for a specific policy.
 
 ---
 
+### [PUT] `/updatePost`
+**Description:**  
+Update contents of a post.
+
+- Body (JSON):
+```json
+{
+    "_id": "673bd2a759737946ba94048c",
+    "author": "MODIFIEDLOL",
+    "body": "Currently taking an 8-week class, and things from the first week still haven't been graded. Not quite sure how to address this, since it's hard to see if I'm on the right path with my assignments if I never receive any feedback. What's the appropriate resource to reach out to?",
+    "comments": [
+      {
+        "author": "Budget-Reception-882",
+        "body": "Email your professor explaining that’s it’s near the end of the semester and you’d like to know where you stand in their course.",
+        "created_at": "2024-11-17T18:49:37"
+      },
+      {
+        "author": "princam_",
+        "body": "You can email them and risk annoying them, or just accept it because apparently that is the standard here.",
+        "created_at": "2024-11-17T19:17:21"
+      }
+    ],
+    "created_at": "2024-11-17T18:32:03",
+    "id": "t3_1gts5ny",
+    "permalink": "/r/UIUC/comments/1gts5ny/what_to_do_about_lack_of_grading/",
+    "title": "What to do about lack of grading",
+    "upvote": 9,
+    "url": "https://www.reddit.com/r/UIUC/comments/1gts5ny/what_to_do_about_lack_of_grading/"
+  }
+```
+
+**Response:**
+- `200 OK`:
+```json
+{
+  "success": true
+}
+```
+
 ### Endpoints Summary
 
 - **GET /posts/{index}**  
@@ -195,9 +234,3 @@ Submit a vote for a specific policy.
 
 - **POST /vote**  
   Submit a vote for a policy.
-
-  /// TODO
-  // getPost: get all posts at a time
-  // postComment: update comment of a post
-  // postUpvote: update Upvote of a post
-
