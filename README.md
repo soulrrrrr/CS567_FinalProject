@@ -66,13 +66,16 @@ Get the policy for this subreddit.
 **Response:**
 - `200 OK`:
 ```json
-{
-  "policy_name": "string",
-  "policy_description": "string",
-  "post_id": "ObjectId",
-  "vote_count": 0,
-  "is_final": true
-}
+[
+  {
+    "_id": "673e70dbfb491a41cf2c3680",
+    "policy_name": "Purpose of the subreddit",
+    "policy_description": "This subreddit is primarily for any topic of interest to students, staff, faculty, alumni, etc of UIUC. Additionally, anything related to Urbana or Champaign is welcome.",
+    "vote_count": 0,
+    "is_final": true
+  },
+  ...
+]
 ```
 
 ---
