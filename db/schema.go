@@ -34,16 +34,6 @@ type Post struct {
 	URL       string             `json:"url" bson:"url"`
 }
 
-// postConcern
-type ConcernRequest struct {
-	ID      primitive.ObjectID `json:"_id"`
-	Concern string             `json:"concern"`
-}
-
-type ConcernResponse struct {
-	Policy string `json:"policy"`
-}
-
 // postSimulation
 type SimulationRequest struct {
 	PolicyID   string `json:"policy"`

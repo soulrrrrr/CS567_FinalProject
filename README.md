@@ -109,8 +109,8 @@ Submit a concern for a post, and get the generated policy.
 - Body (JSON):
 ```json
 {
-  "post": 42,
-  "concern": "Data privacy issue"
+    "_id":"673bd2a759737946ba94049d",
+    "concern": "should ban these nonsense post"
 }
 ```
 
@@ -118,7 +118,7 @@ Submit a concern for a post, and get the generated policy.
 - `200 OK`:
 ```json
 {
-  "policy": "Policy generated for post 000000000000000000000000 with concern: Data privacy issue"
+    "policy": "Posts that encourage or glorify harmful behaviors, such as substance abuse, will be removed.  Posts seeking validation or comparison of negative experiences related to substance abuse will also be removed."
 }
 ```
 

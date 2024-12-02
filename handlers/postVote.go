@@ -44,7 +44,7 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 	err := collection.FindOne(context.TODO(), filter).Decode(&policy)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			http.Error(w, "Policy not found", http.StatusNotFound)
+			http.Error(w, "This is an exist policy. You can only vote to new policies.", http.StatusNotFound)
 			return
 		}
 		http.Error(w, "Error finding policy", http.StatusInternalServerError)
