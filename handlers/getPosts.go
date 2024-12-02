@@ -6,22 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
-	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	collection := db.GetCollection("reddit-posts")
-	vars := mux.Vars(r)
-	indexStr := vars["index"]
-	index, err := strconv.Atoi(indexStr)
-	if err != nil || index < 0 {
-		http.Error(w, "Invalid index", http.StatusBadRequest)
-		return
-	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
