@@ -1,0 +1,52 @@
+[
+    {
+      "policy_name": "Purpose of the subreddit",
+      "policy_description": "This subreddit is primarily for any topic of interest to students, staff, faculty, alumni, etc of UIUC. Additionally, anything related to Urbana or Champaign is welcome.",
+      "post_id": null,
+      "vote_count": 0,
+      "is_final": true
+    },
+    {
+      "policy_name": "Sales, ads, voting, etc.",
+      "policy_description": "You're free to list your place for subletting, beg for facebook votes, advertise your UIUC-related web service, etc.\n\nExcept:\n\n    No Throwaways: Do it from your main account, one with history on r/UIUC.\n\n    No SPAM: You may never, ever post an ad for the same thing twice. If you feel the need to, message the moderators and ask permission.\n\n    Details: All the required details of your post must be included. The moderators can and will remove your post (and inform you) for being way too vague.",
+      "post_id": null,
+      "vote_count": 0,
+      "is_final": true
+    },
+    {
+      "policy_name": "Personal information",
+      "policy_description": "See Reddit's policy.\n\n    You can post the full name of people that work for the university as long as the post is directly related to their work/position.\n\n    If you need to share contact information, please do it via PM.\n\n    You should not post someone else's, even if they have posted it before.\n\n    A link to someone's Facebook account is obviously personal information.",
+      "post_id": null,
+      "vote_count": 0,
+      "is_final": true
+    },
+    {
+      "policy_name": "Illegal activities",
+      "policy_description": "Members of the police read this subreddit and readers may take it upon themselves to report things to them. Please, don't get in trouble.\n\n    Don't buy/sell drugs on this subreddit.\n\n    Don't post asking for someone of age to buy you alcohol.\n\n    You're free to discuss things like visiting the steam tunnels or accessing the roofs of buildings on campus. But please remember that the University takes these things very seriously and you can get in a lot of trouble if they figure out who you are.",
+      "post_id": null,
+      "vote_count": 0,
+      "is_final": true
+    },
+    {
+      "policy_name": "Trolling, excessive profanity, etc.",
+      "policy_description": "The community is expected to police these comments with downvotes, but if required, the moderators might intervene. There will be less leniency for submissions.",
+      "post_id": null,
+      "vote_count": 0,
+      "is_final": true
+    },
+    {
+      "policy_name": "False Or Misleading Information",
+      "policy_description": "False or misleading information will be removed. Repeatedly posting false or misleading information will result in a ban.",
+      "post_id": null,
+      "vote_count": 0,
+      "is_final": true
+    },
+    {
+      "policy_name": "Moderation philosophy",
+      "policy_description": "The moderators try their best to be 'hands-off' and let the subreddit govern itself.",
+      "post_id": null,
+      "vote_count": 0,
+      "is_final": true
+    }
+  ]
+  
