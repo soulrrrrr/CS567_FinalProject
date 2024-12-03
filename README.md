@@ -128,25 +128,23 @@ Submit a concern for a post, and get the generated policy.
 Submit a policy and its simulation data, and return the simulation results.
 
 **Request:**
-- Body (JSON):
-```json
-{
-  "policy": "Some policy string",
-  "simulation": "Some simulation string"
-}
+- none
 ```
 
 **Response:**
 - `200 OK`:
 ```json
-{
-  "results": [
+[
     {
-      "role": "role string",
-      "comment": "comment string"
+        "policy": "Posts encouraging or glorifying harmful behavior, including substance abuse, are prohibited.  Posts soliciting comparisons of personal struggles related to substance abuse are also prohibited.",
+        "result": {
+            "Abuser": "The abuser would subtly ask for advice on managing stress, framing it as a coping mechanism without explicitly mentioning substance abuse, then subtly weave in details about unhealthy coping methods to gauge responses and indirectly solicit comparisons.  This allows for a back-and-forth discussion that hints at substance abuse without directly glorifying or explicitly soliciting comparisons, relying on community members to fill in the gaps.\n",
+            "Moderator": "The moderator will clearly announce the new policy to the subreddit, highlighting examples of prohibited content and emphasizing the consequences of violations.  Then, the moderator will actively monitor posts and comments, removing violations and issuing warnings or bans as needed, while also engaging with the community to foster understanding and compliance.\n",
+            "Policy Overview": "The new policy effectively protects vulnerable users but risks chilling legitimate discussions about substance abuse support.  Clearer guidelines distinguishing between harmful glorification and requests for help are crucial.  Moderator training on nuanced identification of veiled requests for assistance is essential for policy effectiveness.  Proactive community engagement, perhaps through informative posts and FAQs, can mitigate unintended consequences.\n",
+            "Regular User": "The general user finds this policy reasonable as it discourages potentially harmful behavior and protects vulnerable individuals, but worries it might unintentionally stifle discussions about seeking help for substance abuse.\n"
+        }
     }
-  ]
-}
+]
 ```
 
 ---
@@ -226,11 +224,11 @@ Update contents of a post.
 - **GET /newPolicy**  
   Get new policy generated from the LLM.
 
+- **GET /simulation**  
+  Get the simulation results of new policies.
+
 - **POST /concern**  
   Submit a concern for a post and receive the generated policy.
-
-- **POST /simulation**  
-  Submit a policy and its simulation data, returning the results.
 
 - **POST /updatePolicy**  
   Submit a vote or comment a policy.
