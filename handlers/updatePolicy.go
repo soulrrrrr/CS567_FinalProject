@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -13,18 +15,19 @@ import (
 )
 
 // postVote
-type VoteRequest struct {
-	ID     primitive.ObjectID `json:"_id"`
-	UserID int                `json:"user"`
-	Vote   int                `json:"vote"`
+type UpdatePolicyRequest struct {
+	ID      primitive.ObjectID `json:"_id"`
+	UserID  int                `json:"user"`
+	Vote    int                `json:"vote"`
+	Comment string             `json:"comment"`
 }
 
 type VoteResponse struct {
 	Success bool `json:"success"`
 }
 
-func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
-	var request VoteRequest
+func UpdatePolicyHandler(w http.ResponseWriter, r *http.Request) {
+	var request UpdatePolicyRequest
 
 	// Decode the incoming JSON request body
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
@@ -44,16 +47,24 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 	err := collection.FindOne(context.TODO(), filter).Decode(&policy)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			http.Error(w, "This is an exist policy. You can only vote to new policies.", http.StatusNotFound)
+			http.Error(w, "This is an exist policy. You can only comment/vote to new policies.", http.StatusNotFound)
 			return
 		}
 		http.Error(w, "Error finding policy", http.StatusInternalServerError)
 		return
 	}
 
+	newComment := db.Comment{
+		Author:    strconv.Itoa(request.UserID),
+		Body:      request.Comment,
+		CreatedAt: time.Now().Format("2006-01-02T15:04:05"),
+	}
 	// Add the vote (update or increment a field)
 	update := bson.M{
 		"$inc": bson.M{"vote_count": request.Vote}, // Increment a "votes" field (adjust as per your schema)
+	}
+	if request.Comment != "" {
+		update["$push"] = bson.M{"comments": newComment}
 	}
 	_, err = collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {

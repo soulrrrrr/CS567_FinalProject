@@ -123,7 +123,7 @@ Submit a concern for a post, and get the generated policy.
 
 ---
 
-### [POST] `/simulation`
+### [GET] `/simulation`
 **Description:**  
 Submit a policy and its simulation data, and return the simulation results.
 
@@ -151,17 +151,18 @@ Submit a policy and its simulation data, and return the simulation results.
 
 ---
 
-### [POST] `/vote`
+### [POST] `/updatePolicy`
 **Description:**  
-Submit a vote for a specific policy.
+Submit a vote/comment for a specific policy.
 
 **Request:**
 - Body (JSON):
 ```json
 {
-  "user": 1,
-  "policy": "1qwewrw",
-  "vote": "upvote"
+    "_id": "674e1ce7c0992167e68d6601",
+    "user": 12345,
+    "vote": 1,
+    "comment": "this is great."
 }
 ```
 
@@ -231,5 +232,8 @@ Update contents of a post.
 - **POST /simulation**  
   Submit a policy and its simulation data, returning the results.
 
-- **POST /vote**  
-  Submit a vote for a policy.
+- **POST /updatePolicy**  
+  Submit a vote or comment a policy.
+
+- **POST /updatePost**  
+  Submit a update of a post.
