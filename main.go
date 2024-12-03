@@ -22,7 +22,7 @@ func main() {
 	r.HandleFunc("/concern", handlers.PostConcernHandler).Methods("POST")
 	r.HandleFunc("/vote", handlers.PostVoteHandler).Methods("POST")
 	r.HandleFunc("/simulation", handlers.PostSimulationHandler).Methods("POST")
-	r.HandleFunc("/updatePost", handlers.UpdatePostHandler).Methods("PUT")
+	r.HandleFunc("/updatePost", handlers.UpdatePostHandler).Methods("POST")
 
 	port := os.Getenv("PORT")
 	if port == "" {

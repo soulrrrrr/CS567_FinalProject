@@ -15,13 +15,12 @@ This document provides details on the available API endpoints and their request/
 
 ---
 
-### [GET] `/posts/{index}`
+### [GET] `/posts`
 **Description:**  
-Get the `{index}`th post from the database.
+Get all posts from the database.
 
 **Request:**
-- Path Parameter:
-  - `index`: The index of the post to retrieve.
+- None
 
 **Response:**
 - `200 OK`:
@@ -82,7 +81,7 @@ Get the policy for this subreddit.
 
 ### [GET] `/newPolicy`
 **Description:**  
-Get a newly generated policy from the LLM.
+Get all newly generated policy from the LLM.
 
 **Request:**
 - None
@@ -176,7 +175,7 @@ Submit a vote for a specific policy.
 
 ---
 
-### [PUT] `/updatePost`
+### [POST] `/updatePost`
 **Description:**  
 Update contents of a post.
 
@@ -217,8 +216,8 @@ Update contents of a post.
 
 ### Endpoints Summary
 
-- **GET /posts/{index}**  
-  Get the `{index}`th post.
+- **GET /posts**  
+  Get all posts.
 
 - **GET /policy**  
   Get policy for the subreddit.
