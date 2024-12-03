@@ -34,18 +34,3 @@ type Post struct {
 	Upvote    int                `json:"upvote" bson:"upvote"`
 	URL       string             `json:"url" bson:"url"`
 }
-
-// postSimulation
-type SimulationRequest struct {
-	PolicyID   string `json:"policy"`
-	Simulation string `json:"simulation"`
-}
-
-type SimulationResponse struct {
-	Results []SimulationResult `json:"results"`
-}
-
-type SimulationResult struct {
-	Role    string `json:"role"`
-	Comment string `json:"comment"`
-}

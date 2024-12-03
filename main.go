@@ -21,7 +21,7 @@ func main() {
 	r.HandleFunc("/newPolicy", handlers.GetNewPolicyHandler).Methods("GET")
 	r.HandleFunc("/concern", handlers.PostConcernHandler).Methods("POST")
 	r.HandleFunc("/updatePolicy", handlers.UpdatePolicyHandler).Methods("POST")
-	r.HandleFunc("/simulation", handlers.PostSimulationHandler).Methods("GET")
+	r.HandleFunc("/simulation", handlers.GetSimulationHandler).Methods("GET")
 	r.HandleFunc("/updatePost", handlers.UpdatePostHandler).Methods("POST")
 
 	port := os.Getenv("PORT")

@@ -1,42 +1,64 @@
 package handlers
 
 import (
-	"567_final/db"
+	"567_final/llmservice"
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-func PostSimulationHandler(w http.ResponseWriter, r *http.Request) {
-	var request db.SimulationRequest
+// postSimulation
 
-	// Decode the incoming JSON request body
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
-		return
+type SimulationResponse struct {
+	Results []SimulationResult `json:"results"`
+}
+
+type SimulationResult struct {
+	Policy string            `json:"policy"`
+	Result map[string]string `json:"result"`
+}
+
+func GetSimulationHandler(w http.ResponseWriter, r *http.Request) {
+
+	// get current policies
+	currPolicyList := GetPolicyFromDB(true)
+	var currPolicies []string
+	for _, policy := range currPolicyList {
+		currPolicies = append(currPolicies, policy.PolicyDescription)
 	}
 
-	// Log the received data (optional)
-	fmt.Printf("Received POST request: %+v\n", request)
+	// get new policies
+	newPolicyList := GetPolicyFromDB(false)
+	var newPolicies []string
+	for _, policy := range newPolicyList {
+		newPolicies = append(newPolicies, policy.PolicyDescription)
+	}
 
 	// TODO: connect with LLM and get feedback
-	var results []db.SimulationResult
+	var results []SimulationResult
 
-	for i := 0; i < 3; i++ {
-		result := db.SimulationResult{
-			Role:    fmt.Sprintf("role %d", i),
-			Comment: fmt.Sprintf("I am role %d!", i),
+	for _, newPolicy := range newPolicies {
+		var result SimulationResult
+		result.Policy = newPolicy
+		result.Result = make(map[string]string)
+
+		// Simulate the new policy
+		responses, err := llmservice.SimulatePolicy(currPolicies, newPolicy)
+		if err != nil {
+			fmt.Printf("Error simulating policy: %v\n", err)
+			return
+		}
+
+		// Display the simulation responses
+		for role, response := range responses {
+			result.Result[role] = response
 		}
 		results = append(results, result)
 	}
 
-	response := db.SimulationResponse{
-		Results: results,
-	}
-
 	// Return the response as JSON
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(response); err != nil {
+	if err := json.NewEncoder(w).Encode(results); err != nil {
 		http.Error(w, "Failed to generate response", http.StatusInternalServerError)
 		return
 	}
