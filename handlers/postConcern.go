@@ -3,9 +3,11 @@ package handlers
 import (
 	"567_final/db"
 	"567_final/llmservice"
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -15,19 +17,24 @@ import (
 
 // postConcern
 type ConcernRequest struct {
-	UserID  string             `json:"userid"`
+	UserID  string             `json:"userID"`
 	PostID  primitive.ObjectID `json:"_id"`
 	Concern string             `json:"concern"`
 }
 
-type ConcernResponse struct {
-	Policy string `json:"policy"`
-}
-
 func PostConcernHandler(w http.ResponseWriter, r *http.Request) {
-	var request ConcernRequest
 
-	// Decode the incoming JSON request body
+	// Read the raw request body to use in logging
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read request body", http.StatusBadRequest)
+		return
+	}
+	// Restore the body for further processing
+	r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
+	// Decode the JSON request body
+	var request ConcernRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
@@ -59,13 +66,19 @@ func PostConcernHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := ConcernResponse{
-		Policy: "",
+	// Log the request and response
+	var parsedRequest map[string]interface{}
+	if err := json.Unmarshal(bodyBytes, &parsedRequest); err != nil {
+		fmt.Printf("Failed to parse request for logging: %v\n", err)
+	}
+
+	response := map[string]interface{}{
+		"success": true,
+		"policy":  newPolicy,
 	}
 
 	if newPolicy != "" {
 		fmt.Printf("New Policy Generated:\n%s\n\n", newPolicy)
-		response.Policy = newPolicy
 
 		insertPolicy := db.Policy{
 			ID:                primitive.NewObjectID(),
@@ -92,6 +105,8 @@ func PostConcernHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to generate response", http.StatusInternalServerError)
 		return
 	}
+
+	db.Logger.Log("POSTCONCERN", request.UserID, "Processed post concern request", parsedRequest, response)
 
 }
 
