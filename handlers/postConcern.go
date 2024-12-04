@@ -15,6 +15,7 @@ import (
 
 // postConcern
 type ConcernRequest struct {
+	UserID  string             `json:"userid"`
 	PostID  primitive.ObjectID `json:"_id"`
 	Concern string             `json:"concern"`
 }

@@ -4,7 +4,6 @@ import (
 	"567_final/db"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -33,7 +32,6 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		posts = append(posts, post)
 	}
-	fmt.Printf("[GET] /posts\n")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(posts)
 }

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"567_final/logger"
 	"context"
 	"log"
 	"os"
@@ -11,6 +12,7 @@ import (
 )
 
 var Client *mongo.Client
+var Logger *logger.MongoLogger
 
 func ConnectMongoDB() {
 	mongoURI := os.Getenv("MONGO_URI")
@@ -31,6 +33,7 @@ func ConnectMongoDB() {
 
 	log.Println("Connected to MongoDB")
 	Client = client
+	Logger = logger.NewMongoLogger(client, "project-cluster", "log")
 }
 
 func GetCollection(collectionName string) *mongo.Collection {

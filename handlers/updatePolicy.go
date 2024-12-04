@@ -16,7 +16,7 @@ import (
 // postVote
 type UpdatePolicyRequest struct {
 	ID      primitive.ObjectID `json:"_id"`
-	UserID  string             `json:"user"`
+	UserID  string             `json:"userid"`
 	Vote    int                `json:"vote"`
 	Comment string             `json:"comment"`
 }
