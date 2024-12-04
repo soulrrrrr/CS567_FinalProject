@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"567_final/db"
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -16,7 +18,7 @@ import (
 // postVote
 type UpdatePolicyRequest struct {
 	ID      primitive.ObjectID `json:"_id"`
-	UserID  string             `json:"userid"`
+	UserID  string             `json:"userID"`
 	Vote    int                `json:"vote"`
 	Comment string             `json:"comment"`
 }
@@ -28,14 +30,20 @@ type VoteResponse struct {
 func UpdatePolicyHandler(w http.ResponseWriter, r *http.Request) {
 	var request UpdatePolicyRequest
 
+	// Read the raw request body to use in logging
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read request body", http.StatusBadRequest)
+		return
+	}
+	// Restore the body for further processing
+	r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
 	// Decode the incoming JSON request body
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
-
-	// Log the received data (optional)
-	fmt.Printf("Received POST request: %+v\n", request)
 
 	// TODO: insert vote to database
 	collection := db.GetCollection("uiuc-policy")
@@ -43,7 +51,7 @@ func UpdatePolicyHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if the policy exists
 	filter := bson.M{"_id": request.ID, "is_final": false}
 	var policy bson.M
-	err := collection.FindOne(context.TODO(), filter).Decode(&policy)
+	err = collection.FindOne(context.TODO(), filter).Decode(&policy)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			http.Error(w, "This is an exist policy. You can only comment/vote to new policies.", http.StatusNotFound)
@@ -58,6 +66,13 @@ func UpdatePolicyHandler(w http.ResponseWriter, r *http.Request) {
 		Body:      request.Comment,
 		CreatedAt: time.Now().Format("2006-01-02T15:04:05"),
 	}
+
+	// Log the request and response
+	var parsedRequest map[string]interface{}
+	if err := json.Unmarshal(bodyBytes, &parsedRequest); err != nil {
+		fmt.Printf("Failed to parse request for logging: %v\n", err)
+	}
+
 	// Add the vote (update or increment a field)
 	update := bson.M{
 		"$inc": bson.M{"vote_count": request.Vote}, // Increment a "votes" field (adjust as per your schema)
@@ -72,9 +87,9 @@ func UpdatePolicyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create a response based on the received data
-	response := VoteResponse{
-		// TODO: success depends on vote entered db or not
-		Success: true,
+	response := map[string]interface{}{
+		"success": true,
+		"message": "Policy updated successfully",
 	}
 
 	// Return the response as JSON
@@ -83,5 +98,7 @@ func UpdatePolicyHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to generate response", http.StatusInternalServerError)
 		return
 	}
+
+	db.Logger.Log("UPDATEPOLICY", request.UserID, "Processed update policy request", parsedRequest, response)
 
 }

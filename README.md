@@ -157,7 +157,7 @@ Submit a vote/comment for a specific policy.
 ```json
 {
     "_id": "674e1ce7c0992167e68d6601",
-    "user": "12345",
+    "userID": "tester2",
     "vote": 1,
     "comment": "this is great."
 }
@@ -167,7 +167,8 @@ Submit a vote/comment for a specific policy.
 - `200 OK`:
 ```json
 {
-  "success": true
+    "message": "Policy updated successfully",
+    "success": true
 }
 ```
 
@@ -180,6 +181,8 @@ Update contents of a post.
 - Body (JSON):
 ```json
 {
+    "userID": "tester1",
+    "post": {
     "_id": "673bd2a759737946ba94048c",
     "author": "MODIFIEDLOL",
     "body": "Currently taking an 8-week class, and things from the first week still haven't been graded. Not quite sure how to address this, since it's hard to see if I'm on the right path with my assignments if I never receive any feedback. What's the appropriate resource to reach out to?",
@@ -202,13 +205,15 @@ Update contents of a post.
     "upvote": 9,
     "url": "https://www.reddit.com/r/UIUC/comments/1gts5ny/what_to_do_about_lack_of_grading/"
   }
+}
 ```
 
 **Response:**
 - `200 OK`:
 ```json
 {
-  "success": true
+    "message": "Post updated successfully",
+    "success": true
 }
 ```
 
