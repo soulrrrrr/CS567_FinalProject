@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -17,7 +16,7 @@ import (
 // postVote
 type UpdatePolicyRequest struct {
 	ID      primitive.ObjectID `json:"_id"`
-	UserID  int                `json:"user"`
+	UserID  string             `json:"user"`
 	Vote    int                `json:"vote"`
 	Comment string             `json:"comment"`
 }
@@ -55,7 +54,7 @@ func UpdatePolicyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newComment := db.Comment{
-		Author:    strconv.Itoa(request.UserID),
+		Author:    request.UserID,
 		Body:      request.Comment,
 		CreatedAt: time.Now().Format("2006-01-02T15:04:05"),
 	}

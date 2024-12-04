@@ -129,7 +129,6 @@ Submit a policy and its simulation data, and return the simulation results.
 
 **Request:**
 - none
-```
 
 **Response:**
 - `200 OK`:
@@ -158,7 +157,7 @@ Submit a vote/comment for a specific policy.
 ```json
 {
     "_id": "674e1ce7c0992167e68d6601",
-    "user": 12345,
+    "user": "12345",
     "vote": 1,
     "comment": "this is great."
 }
