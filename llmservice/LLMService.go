@@ -207,6 +207,86 @@ func SimulatePolicy(currentPolicies []string, newPolicy string) (map[string]stri
 	return responses, nil
 }
 
+// EvaluatePolicyFeasibility evaluates whether a proposed policy is feasible and generates a name for it.
+// This function uses the Gemini AI to carefully analyze the proposed policy against several key criteria.
+//
+// Inputs:
+// - currentPolicies: An array of existing policies in the community
+// - proposedPolicy: The text of the newly generated policy
+// - postContent: The original post that triggered the policy generation
+// - simulationResponses: A map of responses from different community roles simulating the policy
+//
+// Outputs:
+// - A string representing the policy name if the policy is deemed feasible
+// - An empty string if the policy is not feasible
+// - An error if any occurs during the evaluation process
+// The function follows a detailed evaluation process:
+// 1. Construct a comprehensive prompt that includes:
+//   - Current policies
+//   - Proposed policy
+//   - Original post context
+//   - Simulation responses from different roles
+//
+// 2. Use Gemini AI to carefully analyze the policy's feasibility
+// 3. Extract and return a policy name if feasible, or an empty string if not
+func EvaluatePolicyFeasibility(
+	currentPolicies []string,
+	proposedPolicy string,
+	postContent string,
+	simulationResponses map[string]string,
+) (string, error) {
+	client, ctx, err := getGeminiClient()
+	if err != nil {
+		return "", err
+	}
+	defer client.Close()
+	prompt := "Carefully evaluate the feasibility of the following proposed policy.\n\n"
+	// current policies
+	prompt += "Current Policies:\n"
+	for _, policy := range currentPolicies {
+		prompt += "- " + policy + "\n"
+	}
+	prompt += "\n"
+	// original post context
+	prompt += "Original Post Context:\n"
+	prompt += fmt.Sprintf("'%s'\n\n", postContent)
+	// proposed policy
+	prompt += "Proposed Policy:\n"
+	prompt += fmt.Sprintf("'%s'\n\n", proposedPolicy)
+	// simulation responses
+	prompt += "Policy Simulation Responses:\n"
+	for role, response := range simulationResponses {
+		prompt += fmt.Sprintf("%s Response: %s\n\n", role, response)
+	}
+	prompt += "Carefully analyze this proposed policy by considering the following criteria:\n" +
+		"1. Alignment with existing policies and community values\n" +
+		"2. Potential effectiveness in addressing the original concern\n" +
+		"3. Practicality of implementation based on moderator and user responses\n" +
+		"4. Potential for unintended negative consequences\n" +
+		"5. Clarity and specificity of the policy\n\n" +
+		"Respond with a structured output:\n" +
+		"Feasibility: [Yes/No]\n" +
+		"Policy Name: [If feasible, provide a concise, descriptive name for the policy]\n" +
+		"Brief Reasoning: [Short explanation of the feasibility assessment]"
+	model := client.GenerativeModel("gemini-1.5-flash")
+	resp, err := model.GenerateContent(ctx, genai.Text(prompt))
+	if err != nil {
+		return "", err
+	}
+	responseText := extractResponseText(resp)
+	feasibilityRegex := regexp.MustCompile(`(?mi)^Feasibility:\s*(Yes|No)`)
+	policyNameRegex := regexp.MustCompile(`(?mi)^Policy Name:\s*(.*)`)
+	feasibilityMatches := feasibilityRegex.FindStringSubmatch(responseText)
+	policyNameMatches := policyNameRegex.FindStringSubmatch(responseText)
+	// Determine feasibility and policy name
+	if len(feasibilityMatches) > 1 && feasibilityMatches[1] == "Yes" {
+		if len(policyNameMatches) > 1 {
+			return strings.TrimSpace(policyNameMatches[1]), nil
+		}
+		return "Unnamed Policy", nil
+	}
+	return "", nil
+}
 ////////////////////////////////////////////////////// EXAMPLE USAGE //////////////////////////////////////////////////////////////////
 
 // func main() {
