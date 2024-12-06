@@ -120,6 +120,7 @@ func GenerateNewPolicy(currentPolicies []string, postContent string, userComment
 
 	// Process the response to extract the new policy
 	responseText := extractResponseText(resp)
+	// fmt.Println(responseText)
 	// assuming the LLM follows the response format
 	var newPolicyNeeded string
 	var proposedPolicy string
