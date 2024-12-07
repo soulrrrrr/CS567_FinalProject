@@ -6,6 +6,7 @@
    ```
    // .env
    MONGO_URI=mongodb+srv://...
+   GEMINI_API_KEY=...
    ```
 3. run `docker-compose up --build` to start the backend 
 
