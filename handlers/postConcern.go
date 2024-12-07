@@ -93,7 +93,7 @@ func PostConcernHandler(w http.ResponseWriter, r *http.Request) {
 		for role, response := range responses {
 			simulateResult[role] = response
 		}
-		logResponse["simulateResult"] = simulateResult
+		logResponse["simulationResult"] = simulateResult
 
 		// evalute policy
 		newPolicyName, err := llmservice.EvaluatePolicyFeasibility(currentPolicies, newPolicy, postContent, simulateResult)
@@ -108,10 +108,11 @@ func PostConcernHandler(w http.ResponseWriter, r *http.Request) {
 
 		insertPolicy := db.Policy{
 			ID:                primitive.NewObjectID(),
-			PolicyName:        newPolicyName, // Assign policy name from newPolicy
-			PolicyDescription: newPolicy,     // You may want to improve this to a more detailed description
-			VoteCount:         0,             // Default vote count
-			IsFinal:           false,         // Default isFinal value
+			PolicyName:        newPolicyName,  // Assign policy name from newPolicy
+			PolicyDescription: newPolicy,      // You may want to improve this to a more detailed description
+			VoteCount:         0,              // Default vote count
+			IsFinal:           false,          // Default isFinal value
+			SimulationResult:  simulateResult, // log simulation result
 		}
 
 		// Insert the new policy into the database

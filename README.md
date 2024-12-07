@@ -68,11 +68,13 @@ Get the policy for this subreddit.
 ```json
 [
   {
-    "_id": "673e70dbfb491a41cf2c3680",
-    "policy_name": "Purpose of the subreddit",
-    "policy_description": "This subreddit is primarily for any topic of interest to students, staff, faculty, alumni, etc of UIUC. Additionally, anything related to Urbana or Champaign is welcome.",
-    "vote_count": 0,
-    "is_final": true
+      "_id": "673e70dbfb491a41cf2c3680",
+      "policy_name": "Purpose of the subreddit",
+      "policy_description": "This subreddit is primarily for any topic of interest to students, staff, faculty, alumni, etc of UIUC. Additionally, anything related to Urbana or Champaign is welcome.",
+      "vote_count": 1,
+      "is_final": true,
+      "comments": null,
+      "simulationResult": null
   },
   ...
 ]
@@ -90,13 +92,18 @@ Get all newly generated policy from the LLM.
 **Response:**
 - `200 OK`:
 ```json
-{
-  "policy_name": "string",
-  "policy_description": "string",
-  "post_id": "ObjectId",
-  "vote_count": 0,
-  "is_final": false
-}
+[
+  {
+    "_id": "6754d4fb239b2909b8a8ee76",
+    "policy_name": "Protection of Minors' Privacy Policy",
+    "policy_description": "Posts containing potentially identifying information about minors, even in the context of UIUC-related activities, are prohibited.  This includes, but is not limited to, names, photos, locations frequented, or any other information that could reasonably lead to the identification of a minor.",
+    "vote_count": 0,
+    "is_final": false,
+    "comments": null,
+    "simulationResult": null
+},
+...
+]
 ```
 
 ---
@@ -229,7 +236,7 @@ Update contents of a post.
 
 ### [GET] `/log`
 **Description:**  
-Get log.
+Get all log.
 
 **Request:**
 - None
@@ -237,21 +244,30 @@ Get log.
 **Response:**
 - `200 OK`:
 ```json
-{
-    "userID": "tester_no",
-    "timestamp": "2024-12-06T23:45:02.348Z",
-    "level": "POSTCONCERN",
-    "message": "Processed post concern request",
-    "request": {
-        "_id": "673bd2a759737946ba94048c",
-        "concern": "should ban these nonsense post",
-        "userID": "tester_no"
-    },
-    "response": {
-        "policy": "",
-        "success": false
-    }
-}
+[
+   {
+      "userID": "tester_12071719",
+      "timestamp": "2024-12-07T23:20:26.618Z",
+      "level": "POSTCONCERN",
+      "message": "Processed post concern request",
+      "request": {
+          "_id": "673bd2a759737946ba94049d",
+          "concern": "should ban these nonsense post",
+          "userID": "tester_12071719"
+      },
+      "response": {
+          "policy": "Posts that encourage or glorify harmful behaviors, including substance abuse, will be removed.  Vague or attention-seeking posts that lack constructive content will also be removed.",
+          "simulateResult": {
+              "Abuser": "The abuser would craft a post vaguely describing a fictional character's struggles with addiction, framing it as a creative writing piece or a request for writing prompts, thus masking the glorification of substance abuse while technically complying with the letter of the new rule.  This allows for exploration of dark themes while avoiding direct encouragement or celebration of harmful behavior.\n",
+              "Moderator": "The moderator will create a clear, concise explanation of the new policy and add it to the subreddit's rules and FAQs, clarifying examples of prohibited content, such as posts glorifying drug use or vague, attention-seeking posts lacking substance.  To enforce consistently, the moderator will actively monitor new posts, utilizing automated tools where possible, and promptly remove violating content, issuing warnings or bans for repeat offenders, with a focus on educating users about appropriate content.\n",
+              "Policy Overview": "The new policy aims to curb substance abuse glorification, fostering a safer online environment, but its vagueness leaves it vulnerable to exploitation by abusers.  Consistent and transparent moderation is crucial for its success, requiring clear guidelines and well-trained moderators.  Automated tools can assist, but human oversight remains vital to prevent unfair application.  Improved clarity in defining prohibited content and providing concrete examples will strengthen the policy's effectiveness.\n",
+              "Regular User": "The general user finds this policy reasonable as it promotes a safer and more productive online community.  However, the user hopes the moderators will apply this policy fairly and consistently to avoid subjective interpretations.\n"
+          },
+          "success": true
+      }
+  },
+  ...
+]
 ```
 
 ### Endpoints Summary
@@ -263,7 +279,7 @@ Get log.
   Get policy for the subreddit.
 
 - **GET /newPolicy**  
-  Get new policy generated from the LLM.
+  Get all new policy generated from the LLM.
 
 - **GET /simulation**  
   Get the simulation results of new policies.
@@ -276,3 +292,6 @@ Get log.
 
 - **POST /updatePost**  
   Submit a update of a post.
+
+- **GET /log**  
+  Get all logs.
