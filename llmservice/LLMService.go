@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 
 	"github.com/google/generative-ai-go/genai"
 	"google.golang.org/api/option"
@@ -288,6 +289,7 @@ func EvaluatePolicyFeasibility(
 	}
 	return "", nil
 }
+
 ////////////////////////////////////////////////////// EXAMPLE USAGE //////////////////////////////////////////////////////////////////
 
 // func main() {

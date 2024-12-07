@@ -72,24 +72,50 @@ func PostConcernHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Failed to parse request for logging: %v\n", err)
 	}
 
-	response := map[string]interface{}{
-		"success": true,
+	logResponse := map[string]interface{}{
+		"success": false,
 		"policy":  newPolicy,
 	}
 
 	if newPolicy != "" {
 		fmt.Printf("New Policy Generated:\n%s\n\n", newPolicy)
 
+		// run simulation
+		// Simulate the new policy
+		simulateResult := make(map[string]string)
+		responses, err := llmservice.SimulatePolicy(currentPolicies, newPolicy)
+		if err != nil {
+			fmt.Printf("Error simulating policy: %v\n", err)
+			return
+		}
+
+		// Display the simulation responses
+		for role, response := range responses {
+			simulateResult[role] = response
+		}
+		logResponse["simulateResult"] = simulateResult
+
+		// evalute policy
+		newPolicyName, err := llmservice.EvaluatePolicyFeasibility(currentPolicies, newPolicy, postContent, simulateResult)
+
+		if err != nil {
+			fmt.Printf("Error evaluating policy: %v\n", err)
+			db.Logger.Log("POSTCONCERN_ERROR_EVAL", request.UserID, err.Error(), parsedRequest, logResponse)
+			return
+		}
+
+		logResponse["success"] = true
+
 		insertPolicy := db.Policy{
 			ID:                primitive.NewObjectID(),
-			PolicyName:        newPolicy, // Assign policy name from newPolicy
-			PolicyDescription: newPolicy, // You may want to improve this to a more detailed description
-			VoteCount:         0,         // Default vote count
-			IsFinal:           false,     // Default isFinal value
+			PolicyName:        newPolicyName, // Assign policy name from newPolicy
+			PolicyDescription: newPolicy,     // You may want to improve this to a more detailed description
+			VoteCount:         0,             // Default vote count
+			IsFinal:           false,         // Default isFinal value
 		}
 
 		// Insert the new policy into the database
-		err := addPolicyToDB(insertPolicy)
+		err = addPolicyToDB(insertPolicy)
 		if err != nil {
 			fmt.Printf("Error inserting new policy: %v\n", err)
 			return
@@ -101,12 +127,12 @@ func PostConcernHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Return the response as JSON
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(response); err != nil {
+	if err := json.NewEncoder(w).Encode(logResponse); err != nil {
 		http.Error(w, "Failed to generate response", http.StatusInternalServerError)
 		return
 	}
 
-	db.Logger.Log("POSTCONCERN", request.UserID, "Processed post concern request", parsedRequest, response)
+	db.Logger.Log("POSTCONCERN", request.UserID, "Processed post concern request", parsedRequest, logResponse)
 
 }
 

@@ -5,7 +5,7 @@
 2. add .env file to current folder
    ```
    // .env
-   MONGODB_URI=mongodb+srv://...
+   MONGO_URI=mongodb+srv://...
    ```
 3. run `docker-compose up --build` to start the backend 
 
@@ -108,8 +108,9 @@ Submit a concern for a post, and get the generated policy.
 - Body (JSON):
 ```json
 {
+    "userID": "tester3",
     "_id":"673bd2a759737946ba94049d",
-    "concern": "should ban these nonsense post"
+    "concern": "shouldn't ban these post"
 }
 ```
 
@@ -117,7 +118,14 @@ Submit a concern for a post, and get the generated policy.
 - `200 OK`:
 ```json
 {
-    "policy": "Posts that encourage or glorify harmful behaviors, such as substance abuse, will be removed.  Posts seeking validation or comparison of negative experiences related to substance abuse will also be removed."
+    "policy": "Posts encouraging or glorifying harmful behavior, such as excessive drinking, will be removed.  This includes posts that solicit comparisons of negative experiences related to such behavior.",
+    "simulateResult": {
+        "Abuser": "The abuser would craft a post subtly comparing negative consequences of *responsible* alcohol consumption (e.g., a mild hangover) to highlight the perceived absurdity of the rule, thereby indirectly mocking the policy's overreach without explicitly glorifying excessive drinking.  This approach aims to exploit a loophole by focusing on the unintended consequences of the policy's broad interpretation.\n",
+        "Moderator": "The moderator will proactively monitor posts for content glorifying or encouraging excessive drinking, including requests for negative experience comparisons, and promptly remove any violating submissions with a clear explanation of the policy violation.  Additionally, the moderator will educate the community about the new policy through announcements and responses to relevant queries, emphasizing the importance of responsible content creation.\n",
+        "Policy Overview": "The policy, while well-intentioned, risks inconsistent enforcement due to vague terminology, potentially leading to frustration and circumvention.  Abusers may exploit ambiguities to undermine its purpose, creating a need for clearer definitions and more specific examples.  Proactive moderation is crucial, but educational efforts must emphasize the spirit, not just the letter, of the policy.  Improved clarity and community engagement are key to successful implementation.\n",
+        "Regular User": "The general user finds this policy reasonable as it discourages potentially harmful behavior; however,  the vagueness of \"excessive drinking\" and \"negative experiences\" might lead to inconsistent enforcement.\n"
+    },
+    "success": true
 }
 ```
 
@@ -178,6 +186,7 @@ Submit a vote/comment for a specific policy.
 **Description:**  
 Update contents of a post.
 
+**Request**
 - Body (JSON):
 ```json
 {
@@ -217,6 +226,33 @@ Update contents of a post.
 }
 ```
 
+### [GET] `/log`
+**Description:**  
+Get log.
+
+**Request:**
+- None
+
+**Response:**
+- `200 OK`:
+```json
+{
+    "userID": "tester_no",
+    "timestamp": "2024-12-06T23:45:02.348Z",
+    "level": "POSTCONCERN",
+    "message": "Processed post concern request",
+    "request": {
+        "_id": "673bd2a759737946ba94048c",
+        "concern": "should ban these nonsense post",
+        "userID": "tester_no"
+    },
+    "response": {
+        "policy": "",
+        "success": false
+    }
+}
+```
+
 ### Endpoints Summary
 
 - **GET /posts**  
@@ -232,7 +268,7 @@ Update contents of a post.
   Get the simulation results of new policies.
 
 - **POST /concern**  
-  Submit a concern for a post and receive the generated policy.
+  Submit a concern for a post, simulate and output the generated policy. If no need to produce new policy or produced new policy doesn't pass simulation test, no policy will return.
 
 - **POST /updatePolicy**  
   Submit a vote or comment a policy.

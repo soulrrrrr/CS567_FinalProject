@@ -34,7 +34,6 @@ func GetSimulationHandler(w http.ResponseWriter, r *http.Request) {
 		newPolicies = append(newPolicies, policy.PolicyDescription)
 	}
 
-	// TODO: connect with LLM and get feedback
 	var results []SimulationResult
 
 	for _, newPolicy := range newPolicies {
