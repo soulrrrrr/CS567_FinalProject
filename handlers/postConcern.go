@@ -97,10 +97,19 @@ func PostConcernHandler(w http.ResponseWriter, r *http.Request) {
 
 		// evalute policy
 		newPolicyName, err := llmservice.EvaluatePolicyFeasibility(currentPolicies, newPolicy, postContent, simulateResult)
-
+		fmt.Printf("newPolicy name: %s\n--\n", newPolicyName)
 		if err != nil {
 			fmt.Printf("Error evaluating policy: %v\n", err)
+			// Return the response as JSON
+			http.Error(w, "Failed to generate response", http.StatusInternalServerError)
 			db.Logger.Log("POSTCONCERN_ERROR_EVAL", request.UserID, err.Error(), parsedRequest, logResponse)
+			return
+		}
+
+		if newPolicyName == "" {
+			fmt.Printf("Current policy already covered\n")
+			http.Error(w, "Current policy already covered", http.StatusInternalServerError)
+			db.Logger.Log("POSTCONCERN_ERROR_EVAL", request.UserID, "No policy name", parsedRequest, logResponse)
 			return
 		}
 
