@@ -295,3 +295,6 @@ Get all log.
 
 - **GET /log**  
   Get all logs.
+
+- **DELETE /newPolicy**  
+  Delete all new policy.

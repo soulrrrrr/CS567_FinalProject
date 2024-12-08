@@ -25,6 +25,7 @@ func main() {
 	r.HandleFunc("/updatePolicy", handlers.UpdatePolicyHandler).Methods("POST")
 	r.HandleFunc("/updatePost", handlers.UpdatePostHandler).Methods("POST")
 	r.HandleFunc("/log", handlers.DeleteAllLogsHandler).Methods("DELETE")
+	r.HandleFunc("/newPolicy", handlers.DeleteNewPolicyHandler).Methods("DELETE")
 
 	port := os.Getenv("PORT")
 	if port == "" {
