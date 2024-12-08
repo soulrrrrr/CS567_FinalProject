@@ -54,11 +54,32 @@ func UpdatePolicyHandler(w http.ResponseWriter, r *http.Request) {
 	err = collection.FindOne(context.TODO(), filter).Decode(&policy)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			http.Error(w, "This is an exist policy. You can only comment/vote to new policies.", http.StatusNotFound)
+			http.Error(w, "This is an exist policy or there is no this policy. You can only comment/vote to new policies.", http.StatusNotFound)
 			return
 		}
 		http.Error(w, "Error finding policy", http.StatusInternalServerError)
 		return
+	}
+
+	if policy["comments"] == nil {
+		fmt.Println("Comments field is null, setting up as an array")
+
+		// Define the update to set 'comments' as an empty array
+		update := bson.M{
+			"$set": bson.M{"comments": bson.A{}},
+		}
+
+		// Perform the update
+		_, err = collection.UpdateOne(
+			context.TODO(),
+			filter,
+			update,
+		)
+		if err != nil {
+			fmt.Printf("Failed to initialize 'comments' as an array: %v\n", err)
+			http.Error(w, "Failed to initialize 'comments'", http.StatusInternalServerError)
+			return
+		}
 	}
 
 	newComment := db.Comment{
@@ -73,16 +94,30 @@ func UpdatePolicyHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Failed to parse request for logging: %v\n", err)
 	}
 
-	// Add the vote (update or increment a field)
 	update := bson.M{
-		"$inc": bson.M{"vote_count": request.Vote}, // Increment a "votes" field (adjust as per your schema)
+		"$inc": bson.M{"vote_count": request.Vote}, // Increment the vote count
 	}
+
+	// Add a new comment if provided
 	if request.Comment != "" {
-		update["$push"] = bson.M{"comments": newComment}
+		update["$push"] = bson.M{
+			"comments": newComment, // Push the new comment to the array
+		}
 	}
-	_, err = collection.UpdateOne(context.TODO(), filter, update)
+
+	_, err = collection.UpdateOne(
+		context.TODO(),
+		filter,
+		update,
+	)
+
 	if err != nil {
-		http.Error(w, "Failed to update policy vote", http.StatusInternalServerError)
+		if writeException, ok := err.(mongo.WriteException); ok {
+			for _, writeErr := range writeException.WriteErrors {
+				fmt.Printf("Write error: %v\n", writeErr.Message)
+			}
+		}
+		http.Error(w, "Failed to update the document", http.StatusInternalServerError)
 		return
 	}
 
