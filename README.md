@@ -172,10 +172,10 @@ Submit a vote/comment for a specific policy.
 - Body (JSON):
 ```json
 {
-    "_id": "674e1ce7c0992167e68d6601",
-    "userID": "tester2",
-    "vote": 1,
-    "comment": "this is great."
+    "_id": "6755a0b5570524c811db5e05",
+    "userID": "tester",
+    "vote": 1, // 1 or -1
+    "comment": "this is great." // string or empty string
 }
 ```
 
@@ -269,6 +269,10 @@ Get all log.
   ...
 ]
 ```
+
+- **DELETE /newPolicy**  
+**Description:**  
+Delete all new policy.
 
 ### Endpoints Summary
 
